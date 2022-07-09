@@ -1,5 +1,5 @@
 <template>
-  <li class="catalog__item" >
+  <li class="catalog__item">
     <a class="catalog__pic" href="#">
       <img :src="product.image" :alt="product.title">
     </a>
@@ -11,34 +11,21 @@
     </h3>
 
     <span class="catalog__price">
-              {{ product.price }}} ₽
+              {{ product.price }} ₽
             </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item">
-        <label class="colors__label" for="colors__radio-input">
-          <input class="colors__radio sr-only" id="colors__radio-input" type="radio"
-                 name="color-1" value="#73B6EA" checked="">
-          <span class="colors__value" style="background-color: #73B6EA;">
+      <li class="colors__item" v-for="(colorItem, index) in colors" :key="index">
+        <label class="colors__label" :for="'colors__radio-input_' + product.id + index">
+          <input class="colors__radio sr-only" :id="'colors__radio-input_' + product.id + index"
+                 type="radio"
+                 v-model="color"
+                 name="color" :value="colorItem" checked="">
+          <span class="colors__value" :style="{backgroundColor: colorItem}">
                   </span>
         </label>
       </li>
-      <li class="colors__item">
-        <label class="colors__label" for="colors__radio-input">
-          <input class="colors__radio sr-only" id="colors__radio-input" type="radio"
-                 name="color-1" value="#8BE000">
-          <span class="colors__value" style="background-color: #8BE000;">
-                  </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label" for="colors__radio-input">
-          <input class="colors__radio sr-only" id="colors__radio-input" type="radio"
-                 name="color-1" value="#222">
-          <span class="colors__value" style="background-color: #222;">
-                  </span>
-        </label>
-      </li>
+
     </ul>
   </li>
 </template>
@@ -47,6 +34,12 @@
 export default {
   name: 'ProductItem',
   props: ['product'],
+  data() {
+    return {
+      color: '',
+      colors: ['#73B6EA', '#8BE000', '#222'],
+    };
+  },
 };
 </script>
 
