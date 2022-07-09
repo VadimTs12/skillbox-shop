@@ -15,7 +15,7 @@
             </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item" v-for="(colorItem, index) in colors" :key="index">
+      <li class="colors__item" v-for="(colorItem, index) in product.colors" :key="index">
         <label class="colors__label" :for="'colors__radio-input_' + product.id + index">
           <input class="colors__radio sr-only" :id="'colors__radio-input_' + product.id + index"
                  type="radio"
@@ -37,7 +37,6 @@ export default {
   data() {
     return {
       color: '',
-      colors: ['#73B6EA', '#8BE000', '#222'],
     };
   },
 };

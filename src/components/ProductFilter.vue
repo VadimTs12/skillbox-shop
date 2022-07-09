@@ -17,8 +17,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select" for="form__label--select">
-          <select class="form__select" id="form__label--select" name="category" v-model.number="currentCategoryId"
-                  @input="$emit('input', $event.target.value)">
+          <select class="form__select" id="form__label--select" name="category" v-model.number="currentCategoryId">
             <option value="0">Все категории</option>
             <option :value="category.id" v-for="category in categories" :key="category.id">{{ category.title }}</option>
           </select>
@@ -31,7 +30,7 @@
           <li class="colors__item" v-for="(colorItem, index) in colors" :key="index">
             <label class="colors__label" :for="'colors__radio-input_'  + index">
               <input class="colors__radio sr-only" :id="'colors__radio-input_'  + index" type="radio" name="color"
-                     :value="colorItem" checked="">
+                     v-model="currentColor" :value="colorItem" checked="">
               <span class="colors__value" :style="{backgroundColor: colorItem}">
                   </span>
             </label>
@@ -54,13 +53,14 @@ import categories from '@/data/categories';
 
 export default {
   name: 'ProductFilter',
-  props: ['priceFrom', 'priceTo', 'categoryId'],
+  props: ['priceFrom', 'priceTo', 'categoryId', 'color'],
   data() {
     return {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
-      colors: ['#73B6EA', '#FFBE15', '#939393', '#8BE000', '#FF6B00', '#FFF', '#000'],
+      currentColor: '',
+      colors: ['#73B6EA', '#FFBE15', '#939393', '#8BE000', '#FF6B00', '#ffd4d4', '#000'],
     };
   },
   computed: {
@@ -78,12 +78,16 @@ export default {
     categoryId(value) {
       this.currentCategoryId = value;
     },
+    color(value) {
+      this.currentColor = value;
+    },
   },
   methods: {
     submit() {
       this.$emit('update:priceFrom', this.currentPriceFrom);
       this.$emit('update:priceTo', this.currentPriceTo);
       this.$emit('update:categoryId', this.currentCategoryId);
+      this.$emit('update:color', this.currentColor);
     },
     reset() {
       this.$emit('update:priceFrom', 0);
