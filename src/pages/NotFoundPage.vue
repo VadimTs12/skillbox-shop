@@ -1,11 +1,11 @@
 <template>
-$END$
+<div>Страница не найдена</div>
 </template>
 
 <script>
 export default {
-name: "NotFoundPage"
-}
+  name: 'NotFoundPage',
+};
 </script>
 
 <style scoped>
