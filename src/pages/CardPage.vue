@@ -18,7 +18,7 @@
         Корзина
       </h1>
       <span class="content__info">
-        {{ cartDetailProducts.length }} товар(а)
+        {{ cartProductsData.length }} товар(а)
       </span>
     </div>
 
@@ -26,7 +26,7 @@
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
-            <CardItem v-for="item in cartDetailProducts" :key="item.productId" :item="item"/>
+            <CardItem v-for="item in cartProductsData" :key="item.productId" :item="item"/>
           </ul>
         </div>
 
@@ -59,8 +59,9 @@ export default {
     numberFormat,
   },
   computed: {
-    ...mapGetters(['cartDetailProducts', 'cartTotalPrice']),
+    ...mapGetters(['cartProductsData', 'cartTotalPrice']),
   },
+
 };
 </script>
 
