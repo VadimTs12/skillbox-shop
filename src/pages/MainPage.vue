@@ -16,8 +16,12 @@
                      :color.sync="filterColor"
       />
       <section class="catalog">
-        <ProductList :products="products"/>
-        <BasePagination v-model="page" :count="allProducts" :per-page="productsPerPage"/>
+        <div class="loading" v-if="productsIsLoading">загрузка...</div>
+        <div class="failed" v-if="productsIsLoadingFailed">Ошибка
+          <button @click.prevent="loadProducts">Попробовать еще раз</button>
+        </div>
+        <ProductList/>
+        <BasePagination/>
       </section>
 
     </div>
@@ -29,7 +33,7 @@
 import ProductList from '@/components/ProductList.vue';
 import BasePagination from '@/components/BasePagination.vue';
 import ProductFilter from '@/components/ProductFilter.vue';
-import products from '@/data/products';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MainPage',
@@ -44,38 +48,93 @@ export default {
       filterPriceTo: 0,
       filterCategoryId: 0,
       filterColor: '',
-      page: 1,
-      productsPerPage: 3,
     };
   },
   computed: {
-    filterProducts() {
-      let filterProducts = products;
-      if (this.filterPriceForm > 0) {
-        filterProducts = filterProducts.filter((product) => product.price > this.filterPriceForm);
-      }
-      if (this.filterPriceTo > 0) {
-        filterProducts = filterProducts.filter((product) => product.price < this.filterPriceTo);
-      }
-      if (this.filterCategoryId) {
-        filterProducts = filterProducts.filter((product) => product.categoryId === this.filterCategoryId);
-      }
-      if (this.filterColor) {
-        filterProducts = filterProducts.filter((product) => product.colors.includes(this.filterColor));
-      }
-      return filterProducts;
+    ...mapGetters(['products', 'allProducts', 'productsIsLoading', 'productsIsLoadingFailed']),
+  },
+  methods: {
+    ...mapActions(['loadProducts']),
+  },
+  watch: {
+    filterPriceForm() {
+      this.loadProducts();
     },
-    products() {
-      const offset = (this.page - 1) * this.productsPerPage;
-      return this.filterProducts.slice(offset, offset + this.productsPerPage);
+    filterPriceTo() {
+      this.loadProducts();
     },
-    allProducts() {
-      return this.filterProducts.length;
+    filterCategoryId() {
+      this.loadProducts();
     },
+    filterColor() {
+      this.loadProducts();
+    },
+  },
+  created() {
+    this.loadProducts();
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss">
+.catalog {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-self: stretch;
+
+  &__list {
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 270px);
+    grid-gap: 65px 30px;
+    margin: 0 0 70px;
+  }
+
+  &__pic {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 20px;
+
+    img {
+      object-fit: contain;
+    }
+  }
+
+  &__title {
+    margin: 0 0 10px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+
+    a {
+      -webkit-transition: all .2s ease;
+      transition: all .2s ease;
+
+      &:focus, &:hover {
+        opacity: .6;
+      }
+    }
+  }
+
+  &__price {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+
+  &__pagination {
+    margin-top: auto;
+  }
+}
 
 </style>
