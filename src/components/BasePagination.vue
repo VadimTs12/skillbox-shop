@@ -2,7 +2,7 @@
   <ul class="catalog__pagination pagination">
     <li class="pagination__item">
       <a class="pagination__link pagination__link--arrow " href="#"
-         :class="{'pagination__link--disabled': this.page === 1 }"
+         :class="{'pagination__link--disabled': $store.state.products.page === 1 }"
          aria-label="Предыдущая страница"
          @click.prevent="pagePrev">
         <svg width="8" height="14" fill="currentColor">
@@ -12,14 +12,14 @@
     </li>
     <li class="pagination__item" v-for="pageNumber in pages" :key="pageNumber">
       <a href="#" class="pagination__link"
-         :class="{'pagination__link--current': pageNumber===page}"
+         :class="{'pagination__link--current': pageNumber===$store.state.products.page}"
          @click.prevent="paginate(pageNumber)">
         {{ pageNumber }}
       </a>
     </li>
     <li class="pagination__item">
       <a class="pagination__link pagination__link--arrow" href="#"
-         :class="{'pagination__link--disabled': this.page === this.count / this.perPage }"
+         :class="{'pagination__link--disabled': $store.state.products.page === pages }"
          aria-label="Следующая страница"
          @click.prevent="pageNext">
         <svg width="8" height="14" fill="currentColor">
@@ -31,31 +31,45 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+
 export default {
   name: 'BasePagination',
-  model: {
-    prop: 'page',
-    event: 'paginate',
-  },
-  props: ['page', 'count', 'perPage'],
   computed: {
-    pages() {
-      return Math.ceil(this.count / this.perPage);
-    },
+    ...mapGetters(['pages', 'allProducts']),
   },
   methods: {
-    paginate(page) {
-      this.$emit('paginate', page);
+    ...mapMutations(['paginate', 'pageNext', 'pagePrev']),
+    ...mapActions(['loadProducts']),
+  },
+  watch: {
+    // eslint-disable-next-line func-names
+    '$store.state.products.page': function () {
+      this.loadProducts();
     },
-    pageNext() {
-      if (this.page !== this.count / this.perPage) this.$emit('paginate', this.page + 1);
-    },
-    pagePrev() {
-      if (this.page !== 1) this.$emit('paginate', this.page - 1);
-    },
+  },
+  created() {
+    this.loadProducts();
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.pagination__link {
+  &--arrow {
+    border: 1px solid #727272;
+    border-radius: 10px;
+  }
+
+  &--disabled {
+    pointer-events: none;
+    border: 1px solid #a4a3a3;
+
+    svg {
+      fill:  #a4a3a3
+    }
+  }
+}
+
 </style>
