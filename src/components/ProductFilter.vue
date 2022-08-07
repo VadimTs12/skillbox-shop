@@ -31,13 +31,12 @@
             <label class="colors__label" :for="'colors__radio-input_'  + index">
               <input class="colors__radio sr-only" :id="'colors__radio-input_'  + index" type="radio" name="color"
                      v-model="currentColor" :value="colorItem" checked="">
-              <span class="colors__value" :style="{backgroundColor: colorItem}">
+              <span class="colors__value" :style="{backgroundColor: colorItem.color}">
                   </span>
             </label>
           </li>
         </ul>
       </fieldset>
-
       <button class="filter__submit button button--primery" type="submit">
         Применить
       </button>
@@ -49,7 +48,8 @@
 </template>
 
 <script>
-import categories from '@/data/categories';
+
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'ProductFilter',
@@ -60,40 +60,36 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColor: '',
-      colors: ['#73B6EA', '#FFBE15', '#939393', '#8BE000', '#FF6B00', '#ffd4d4', '#000'],
     };
   },
   computed: {
-    categories() {
-      return categories;
-    },
-  },
-  watch: {
-    priceFrom(value) {
-      this.currentPriceFrom = value;
-    },
-    priceTo(value) {
-      this.currentPriceTo = value;
-    },
-    categoryId(value) {
-      this.currentCategoryId = value;
-    },
-    color(value) {
-      this.currentColor = value;
-    },
+    ...mapGetters(['categories', 'colors']),
   },
   methods: {
+    ...mapActions(['loadCategories', 'loadColors']),
+    ...mapMutations(['filterParametersProduct']),
     submit() {
-      this.$emit('update:priceFrom', this.currentPriceFrom);
-      this.$emit('update:priceTo', this.currentPriceTo);
-      this.$emit('update:categoryId', this.currentCategoryId);
-      this.$emit('update:color', this.currentColor);
+      const value = {
+        currentPriceTo: this.currentPriceTo,
+        currentPriceFrom: this.currentPriceFrom,
+        currentCategoryId: this.currentCategoryId,
+        currentColor: this.currentColor,
+      };
+      this.filterParametersProduct(value);
     },
     reset() {
-      this.$emit('update:priceFrom', 0);
-      this.$emit('update:priceTo', 0);
-      this.$emit('update:categoryId', 0);
+      const value = {
+        currentPriceTo: 0,
+        currentPriceFrom: 0,
+        currentCategoryId: 0,
+        currentColor: '',
+      };
+      this.filterParametersProduct(value);
     },
+  },
+  created() {
+    this.loadCategories();
+    this.loadColors();
   },
 };
 </script>
