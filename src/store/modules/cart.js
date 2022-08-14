@@ -4,6 +4,7 @@ import API_BASE_URL from '@/config';
 const state = {
   cartProducts: [],
   userAccessKey: null,
+  orderInfo: null,
 };
 
 const getters = {
@@ -13,9 +14,18 @@ const getters = {
   cartProductsData(state) {
     return state.cartProducts;
   },
+  orderInfoData(state) {
+    return state.orderInfo;
+  },
 };
 
 const mutations = {
+  updateOrderInfo(state, orderInfo) {
+    state.orderInfo = orderInfo;
+  },
+  resetCart(state) {
+    state.cartProducts = [];
+  },
   updateCartProductQuantity(state, {
     productId,
     quantity,
@@ -59,6 +69,17 @@ const mutations = {
   },
 };
 const actions = {
+  loadOrderInfo(context, orderId) {
+    return axios.get(`${API_BASE_URL}/api/orders/${orderId}`, {
+      params: {
+        userAccessKey: context.state.userAccessKey,
+      },
+    })
+      .then((response) => {
+        context.commit('updateOrderInfo', response.data);
+      })
+      .catch((error) => console.log(error.message));
+  },
   loadCart(context) {
     return axios.get(`${API_BASE_URL}/api/baskets`, {
       params: {
