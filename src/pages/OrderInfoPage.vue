@@ -76,8 +76,8 @@
           </ul>
         </div>
 
-        <div class="cart__block">
-          <ul class="cart__orders" v-if="orderInfo">
+        <div class="cart__block"  v-if="orderInfo">
+          <ul class="cart__orders">
             <li class="cart__order" v-for="item in orderInfo.basket.items" :key="item.id">
               <h3>{{ item.product.title }}</h3>
               <b>{{ item.price }}</b>
@@ -106,6 +106,7 @@ export default {
   },
   computed: {
     orderInfo() {
+      console.log(this.$store.getters.orderInfoData);
       return this.$store.getters.orderInfoData;
     },
   },
