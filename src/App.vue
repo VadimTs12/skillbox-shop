@@ -4,6 +4,7 @@
     <router-view/>
     <FooterComponent/>
   </div>
+  <div id="teleport-target"></div>
 </template>
 
 <script>
@@ -31,6 +32,6 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="scss">
 
 </style>
